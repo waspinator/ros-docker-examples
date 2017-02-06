@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  master:
+    build: .
+    hostname: master
+    container_name: master
+    environment:
+      - "ROS_HOSTNAME=master"
+    command: roscore
+
+  fibonacci:
+    build: .
+    hostname: fibonacci
+    container_name: fibonacci
+    environment:
+      - "ROS_HOSTNAME=fibonacci"
+      - "ROS_MASTER_URI=http://master:11311"
+    command: rosrun actionlib_tutorials fibonacci_server
+
+  resolvable:
+    image: mgood/resolvable
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/resolv.conf:/tmp/resolv.conf
