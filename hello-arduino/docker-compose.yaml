@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+  master:
+    hostname: master
+    container_name: master
+    build:
+      context: .
+      dockerfile: master.dockerfile
+    environment:
+      - "ROS_HOSTNAME=master"
+    command: roscore
+
+  arduino:
+    hostname: arduino
+    container_name: arduino
+    build:
+      context: .
+      dockerfile: talker.dockerfile
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    environment:
+      - "ROS_HOSTNAME=arduino"
+      - "ROS_MASTER_URI=http://master:11311"
+    command: rosrun rosserial_python serial_node.py /dev/ttyACM0
+
+  resolvable:
+    image: mgood/resolvable
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/resolv.conf:/tmp/resolv.conf
