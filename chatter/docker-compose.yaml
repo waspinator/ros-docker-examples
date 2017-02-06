@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  master:
+    hostname: master
+    container_name: master
+    build: .
+    command: roscore
+
+  talker:
+    hostname: talker
+    container_name: talker
+    build: .
+    environment:
+      - "ROS_HOSTNAME=talker"
+      - "ROS_MASTER_URI=http://master:11311"
+    command: rosrun roscpp_tutorials talker
+
+  listener:
+    hostname: listener
+    container_name: listener
+    build: .
+    environment:
+      - "ROS_HOSTNAME=listener"
+      - "ROS_MASTER_URI=http://master:11311"
+    command: rosrun roscpp_tutorials listener
+
+  resolvable:
+    image: mgood/resolvable
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/resolv.conf:/tmp/resolv.conf
