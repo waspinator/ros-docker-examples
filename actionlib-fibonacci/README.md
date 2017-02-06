@@ -1,6 +1,6 @@
 ## An example for running ROS action servers in Docker
 
-**NOT WOKRING**
+**NOT WORKING**
 
 This example assumes your computer has ROS installed on your host. If not, 
 follow the instructions in the ROS wiki (http://wiki.ros.org/kinetic/Installation/Ubuntu)
