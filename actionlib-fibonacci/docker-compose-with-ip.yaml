@@ -1,0 +1,45 @@
+version: '2'
+
+services:
+  master:
+    build: .
+    hostname: master
+    container_name: master
+    environment:
+      - "ROS_HOSTNAME=master"
+      - "ROS_IP=172.25.0.100"
+    command: roscore
+    networks:
+      ros_net:
+        ipv4_address: 172.25.0.100
+
+  fibonacci:
+    build: .
+    hostname: fibonacci
+    container_name: fibonacci
+    environment:
+      - "ROS_HOSTNAME=fibonacci"
+      - "ROS_IP=172.25.0.101"
+      - "ROS_MASTER_URI=http://172.25.0.100:11311"
+    command: rosrun actionlib_tutorials fibonacci_server
+    networks:
+      ros_net:
+        ipv4_address: 172.25.0.101
+
+  resolvable:
+    image: mgood/resolvable
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/resolv.conf:/tmp/resolv.conf
+    networks:
+      ros_net:
+        ipv4_address: 172.25.0.102
+
+networks:
+  ros_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.25.0.0/24
+        gateway: 172.25.0.1
